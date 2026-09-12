@@ -28,6 +28,7 @@
 
 ## 致谢
 
+- **DeepSeek v4.1 Flash** [完成大部分的代码及绘图工作]
 - **Create**（MIT）
 - **Create More Machines**
 
