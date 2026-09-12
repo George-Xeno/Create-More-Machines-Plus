@@ -34,6 +34,7 @@ public class CMMPlus {
         ModBlockEntities.register(modBus);
         ModCreativeTabs.register(modBus);
         modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(ModSetup::register));
+        modBus.addListener(ModSetup::registerCapabilities);
     }
 
     public static ResourceLocation asResource(String path) {

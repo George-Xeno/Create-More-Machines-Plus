@@ -2,6 +2,7 @@ package net.george.cmmplus.registration;
 
 import net.george.cmmplus.CMMPlus;
 import net.george.cmmplus.CMMPlusTier;
+import net.george.cmmplus.content.TieredBeltBlockEntity;
 import net.george.cmmplus.content.TieredFanBlockEntity;
 import net.george.cmmplus.content.TieredWheelBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -30,6 +31,8 @@ public class ModBlockEntities {
             new EnumMap<>(CMMPlusTier.class);
     private static final Map<CMMPlusTier, DeferredHolder<BlockEntityType<?>, BlockEntityType<TieredWheelBlockEntity>>> WHEELS =
             new EnumMap<>(CMMPlusTier.class);
+    private static final Map<CMMPlusTier, DeferredHolder<BlockEntityType<?>, BlockEntityType<TieredBeltBlockEntity>>> BELTS =
+            new EnumMap<>(CMMPlusTier.class);
 
     static {
         for (CMMPlusTier tier : CMMPlusTier.values()) {
@@ -40,6 +43,10 @@ public class ModBlockEntities {
             WHEELS.put(tier, TYPES.register("crushing_wheel_" + tier.id, () -> BlockEntityType.Builder.of(
                     (pos, state) -> new TieredWheelBlockEntity(tier, WHEELS.get(tier).get(), pos, state),
                     ModBlocks.wheel(tier).get()).build(null)));
+
+            BELTS.put(tier, TYPES.register("belt_" + tier.id, () -> BlockEntityType.Builder.of(
+                    (pos, state) -> new TieredBeltBlockEntity(tier, BELTS.get(tier).get(), pos, state),
+                    ModBlocks.belt(tier).get()).build(null)));
         }
     }
 
@@ -49,6 +56,10 @@ public class ModBlockEntities {
 
     public static BlockEntityType<TieredWheelBlockEntity> wheel(CMMPlusTier tier) {
         return WHEELS.get(tier).get();
+    }
+
+    public static BlockEntityType<TieredBeltBlockEntity> belt(CMMPlusTier tier) {
+        return BELTS.get(tier).get();
     }
 
     public static void register(IEventBus modBus) {

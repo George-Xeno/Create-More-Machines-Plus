@@ -22,6 +22,7 @@ public class ModCreativeTabs {
                         for (CMMPlusTier tier : CMMPlusTier.values()) {
                             output.accept(ModBlocks.fan(tier).get());
                             output.accept(ModBlocks.wheel(tier).get());
+                            output.accept(ModItems.beltConnector(tier).get());
                         }
                     })
                     .build());

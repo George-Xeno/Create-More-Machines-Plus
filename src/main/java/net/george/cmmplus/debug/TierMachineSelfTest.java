@@ -13,7 +13,13 @@ import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import net.george.cmmplus.CMMPlus;
 import net.george.cmmplus.CMMPlusConfig;
+import com.simibubi.create.content.kinetics.belt.BeltBlock;
+import com.simibubi.create.content.kinetics.belt.BeltPart;
+import com.simibubi.create.content.kinetics.belt.BeltSlope;
+import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import net.george.cmmplus.CMMPlusTier;
+import net.george.cmmplus.content.TieredBeltBlockEntity;
+import net.george.cmmplus.content.TieredBeltInventory;
 import net.george.cmmplus.content.TieredFanBlockEntity;
 import net.george.cmmplus.content.TieredWheelBlockEntity;
 import net.george.cmmplus.registration.ModBlockEntities;
@@ -96,6 +102,7 @@ public final class TierMachineSelfTest {
         private final BlockPos origin;
         private final List<FanRig> fanRigs = new ArrayList<>();
         private final List<CrusherRig> crusherRigs = new ArrayList<>();
+        private boolean beltChecked = false;
         private final List<String> failures = new ArrayList<>();
         private final List<String> stressReport = new ArrayList<>();
         private String legacyFan = "not tested";
@@ -132,6 +139,9 @@ public final class TierMachineSelfTest {
             // Same machine at Create's maximum rotation speed, to measure what a top tier wheel
             // pair really asks for when it runs flat out.
             crusherRigs.add(buildCrusherRig(32, 0, CMMPlusTier.BEYOND, MAX_MOTOR_SPEED));
+
+            buildBeltRig(-10, 0, CMMPlusTier.BRASS);
+            buildBeltRig(-10, 8, CMMPlusTier.BEYOND);
         }
 
         /**
@@ -276,6 +286,121 @@ public final class TierMachineSelfTest {
             return new CrusherRig(label, tier, level, wheelPosA, controllerPos, motorSpeed);
         }
 
+        /**
+         * A four block straight belt with a creative motor on the pulley side.  Put in place at
+         * build time (the kinetic network needs a tick or two to form before it can be read).
+         */
+        private void buildBeltRig(int dx, int dz, CMMPlusTier tier) {
+            Block belt = ModBlocks.belt(tier).get();
+            BlockPos start = origin.offset(dx, 0, dz);
+            for (int i = 0; i < BELT_RIG_LENGTH; i++) {
+                BeltPart part = i == 0 ? BeltPart.START
+                        : i == BELT_RIG_LENGTH - 1 ? BeltPart.END : BeltPart.MIDDLE;
+                level.setBlock(start.offset(i, 0, 0), belt.defaultBlockState()
+                        .setValue(BeltBlock.SLOPE, BeltSlope.HORIZONTAL)
+                        .setValue(BeltBlock.PART, part)
+                        .setValue(BeltBlock.CASING, false)
+                        .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)
+                        .setValue(BlockStateProperties.WATERLOGGED, false), 3);
+            }
+
+            // Facing EAST makes the belt's shaft axis Z, so the motor goes north of a pulley block
+            // and points south into it.
+            BlockPos motorPos = start.north();
+            level.setBlock(motorPos, withFacing(AllBlocks.CREATIVE_MOTOR.get(), Direction.SOUTH), 3);
+            if (level.getBlockEntity(motorPos) instanceof CreativeMotorBlockEntity motor) {
+                motor.generatedSpeed.setValue(MOTOR_SPEED);
+            }
+
+            // Casing is applied here, at build time: Create rebuilds belt states while the belt
+            // initialises, so applying it in the same tick it is asserted would race that.
+            if (level.getBlockEntity(start) instanceof BeltBlockEntity beltBE) {
+                beltBE.setCasingType(BeltBlockEntity.CasingType.ANDESITE);
+                CMMPlus.LOGGER.info("[self-test] {} casing right after set: state={} field={}",
+                        tier.id, level.getBlockState(start).getValue(BeltBlock.CASING), beltBE.casing);
+            }
+        }
+
+        /**
+         * The tier belts' own assertions.  These are the ones that would silently regress if the
+         * Registrate mixin, the block entity registration or the load accounting broke.
+         */
+        private void verifyBeltRigs() {
+            for (int i = 0; i < 2; i++) {
+                CMMPlusTier tier = i == 0 ? CMMPlusTier.BRASS : CMMPlusTier.BEYOND;
+                int dz = i == 0 ? 0 : 8;
+                BlockPos start = origin.offset(-10, 0, dz);
+                String label = "belt " + tier.id;
+
+                if (!(level.getBlockEntity(start) instanceof TieredBeltBlockEntity be)) {
+                    failures.add(label + ": block entity is " + level.getBlockEntity(start)
+                            + " instead of TieredBeltBlockEntity (Registrate mixin or BE type broken)");
+                    continue;
+                }
+
+                if (be.beltLength != BELT_RIG_LENGTH) {
+                    failures.add(label + ": beltLength is " + be.beltLength + ", expected " + BELT_RIG_LENGTH);
+                }
+                if (!be.isController()) {
+                    failures.add(label + ": first block is not the belt controller");
+                }
+
+                float expectImpact = BELT_RIG_LENGTH * tier.beltStressFactor;
+                if (Math.abs(be.calculateStressApplied() - expectImpact) > 0.001F) {
+                    failures.add(label + ": stress impact is " + be.calculateStressApplied()
+                            + ", expected length x factor = " + expectImpact);
+                }
+
+                if (be.hasNetwork()) {
+                    float expectStress = MOTOR_SPEED * expectImpact;
+                    float actual = be.getOrCreateNetwork().calculateStress();
+                    if (Math.abs(actual - expectStress) > 0.5F) {
+                        failures.add(label + ": network stress is " + actual + ", expected rpm x length x factor = "
+                                + expectStress);
+                    } else {
+                        CMMPlus.LOGGER.info("[self-test] " + label + ": network stress " + actual + " SU at " + MOTOR_SPEED
+                                + " rpm over " + BELT_RIG_LENGTH + " blocks (factor " + tier.beltStressFactor + ")");
+                    }
+                } else {
+                    failures.add(label + ": belt did not join a kinetic network (pulley/shaft connection)");
+                }
+
+                if (!(be.getInventory() instanceof TieredBeltInventory inventory)) {
+                    failures.add(label + ": inventory is not a TieredBeltInventory");
+                } else {
+                    int expectSlots = tier.beltCapacity / 64;
+                    if (inventory.slotsPerBlock() != expectSlots) {
+                        failures.add(label + ": " + inventory.slotsPerBlock() + " slots per block, expected " + expectSlots);
+                    }
+
+                    var handler = be.segmentItemHandler();
+                    if (handler == null || handler.getSlots() != expectSlots) {
+                        failures.add(label + ": segment item handler exposes "
+                                + (handler == null ? "nothing" : handler.getSlots()) + " slots, expected " + expectSlots);
+                    } else {
+                        handler.insertItem(0, new ItemStack(Items.DIRT, 8), false);
+                        ItemStack second = handler.insertItem(0, new ItemStack(Items.STONE, 8), false);
+                        boolean mixed = second.isEmpty();
+                        if (mixed != tier.mixedBeltLoad()) {
+                            failures.add(label + ": inserting a second item type "
+                                    + (mixed ? "was accepted" : "was refused") + " but mixed load is "
+                                    + tier.mixedBeltLoad());
+                        } else {
+                            CMMPlus.LOGGER.info("[self-test] " + label + ": mixed item types in one block "
+                                    + (mixed ? "accepted (Beyond only)" : "refused"));
+                        }
+                    }
+                }
+
+                if (!level.getBlockState(start).getValue(BeltBlock.CASING)) {
+                    failures.add(label + ": casing state did not turn on (BE casing field = " + be.casing + ")");
+                } else {
+                    CMMPlus.LOGGER.info("[self-test] " + label + ": casing applied");
+                }
+            }
+        }
+        private static final int BELT_RIG_LENGTH = 4;
+
         private static BlockState withFacing(Block block, Direction facing) {
             return block.defaultBlockState().setValue(BlockStateProperties.FACING, facing);
         }
@@ -294,7 +419,12 @@ public final class TierMachineSelfTest {
                 rig.tick(ticks);
             }
 
-            boolean allDone = fanRigs.stream().allMatch(rig -> rig.done)
+            if (!beltChecked && ticks > 40) {
+                beltChecked = true;
+                verifyBeltRigs();
+            }
+
+            boolean allDone = beltChecked && fanRigs.stream().allMatch(rig -> rig.done)
                     && crusherRigs.stream().allMatch(rig -> rig.done);
             if (!allDone && ticks < TIMEOUT_TICKS) {
                 return false;

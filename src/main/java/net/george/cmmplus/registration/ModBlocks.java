@@ -2,6 +2,7 @@ package net.george.cmmplus.registration;
 
 import net.george.cmmplus.CMMPlus;
 import net.george.cmmplus.CMMPlusTier;
+import net.george.cmmplus.content.TieredBeltBlock;
 import net.george.cmmplus.content.TieredFanBlock;
 import net.george.cmmplus.content.TieredWheelBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +29,7 @@ public class ModBlocks {
 
     private static final Map<CMMPlusTier, DeferredBlock<TieredFanBlock>> FANS = new EnumMap<>(CMMPlusTier.class);
     private static final Map<CMMPlusTier, DeferredBlock<TieredWheelBlock>> WHEELS = new EnumMap<>(CMMPlusTier.class);
+    private static final Map<CMMPlusTier, DeferredBlock<TieredBeltBlock>> BELTS = new EnumMap<>(CMMPlusTier.class);
 
     static {
         for (CMMPlusTier tier : CMMPlusTier.values()) {
@@ -43,7 +45,21 @@ public class ModBlocks {
                     .noOcclusion();
             WHEELS.put(tier, BLOCKS.register("crushing_wheel_" + tier.id,
                     () -> new TieredWheelBlock(wheelProperties, tier)));
+
+            // Create's own belt properties (see AllBlocks.BELT): the belt is not stone, it is a
+            // wool-soft 0.8 strength block.  Everything else (waterlogging, shape, slope) comes
+            // from BeltBlock itself.
+            BlockBehaviour.Properties beltProperties = BlockBehaviour.Properties.of()
+                    .sound(SoundType.WOOL)
+                    .strength(0.8F)
+                    .mapColor(MapColor.COLOR_GRAY);
+            BELTS.put(tier, BLOCKS.register("belt_" + tier.id,
+                    () -> new TieredBeltBlock(beltProperties, tier)));
         }
+    }
+
+    public static DeferredBlock<TieredBeltBlock> belt(CMMPlusTier tier) {
+        return BELTS.get(tier);
     }
 
     public static DeferredBlock<TieredFanBlock> fan(CMMPlusTier tier) {

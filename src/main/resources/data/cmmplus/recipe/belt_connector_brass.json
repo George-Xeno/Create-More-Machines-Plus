@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "create:belt_connector" },
+    { "item": "create:brass_sheet" }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cmmplus:belt_connector_brass"
+  }
+}

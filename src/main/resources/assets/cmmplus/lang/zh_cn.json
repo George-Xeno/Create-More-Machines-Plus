@@ -12,5 +12,12 @@
   "block.cmmplus.crushing_wheel_brass": "粉碎轮",
   "block.cmmplus.crushing_wheel_netherite": "粉碎轮",
   "block.cmmplus.crushing_wheel_end": "粉碎轮",
-  "block.cmmplus.crushing_wheel_beyond": "粉碎轮"
+  "block.cmmplus.crushing_wheel_beyond": "粉碎轮",
+  "item.cmmplus.belt_connector_brass": "黄铜传送带",
+  "item.cmmplus.belt_connector_netherite": "下界传送带",
+  "item.cmmplus.belt_connector_end": "末地传送带",
+  "item.cmmplus.belt_connector_beyond": "超越传送带",
+  "tooltip.cmmplus.belt.stress": "§a应力消耗：§fRPM × 皮带长度 × %s",
+  "tooltip.cmmplus.belt.capacity": "§a单格运量：§f%s 个位置",
+  "tooltip.cmmplus.belt.mixed": "§a仅超越：§f单格可混装不同物品，共 %s 个位置"
 }

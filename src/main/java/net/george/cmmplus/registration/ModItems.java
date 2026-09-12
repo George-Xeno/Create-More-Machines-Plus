@@ -2,6 +2,7 @@ package net.george.cmmplus.registration;
 
 import net.george.cmmplus.CMMPlus;
 import net.george.cmmplus.CMMPlusTier;
+import net.george.cmmplus.content.TieredBeltConnectorItem;
 import net.george.cmmplus.item.TieredBlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -17,6 +18,8 @@ public class ModItems {
 
     private static final Map<CMMPlusTier, DeferredItem<TieredBlockItem>> FANS = new EnumMap<>(CMMPlusTier.class);
     private static final Map<CMMPlusTier, DeferredItem<TieredBlockItem>> WHEELS = new EnumMap<>(CMMPlusTier.class);
+    private static final Map<CMMPlusTier, DeferredItem<TieredBeltConnectorItem>> BELT_CONNECTORS =
+            new EnumMap<>(CMMPlusTier.class);
 
     static {
         for (CMMPlusTier tier : CMMPlusTier.values()) {
@@ -24,7 +27,13 @@ public class ModItems {
                     props -> new TieredBlockItem(ModBlocks.fan(tier).get(), props, tier)));
             WHEELS.put(tier, ITEMS.registerItem("crushing_wheel_" + tier.id,
                     props -> new TieredBlockItem(ModBlocks.wheel(tier).get(), props, tier)));
+            BELT_CONNECTORS.put(tier, ITEMS.registerItem("belt_connector_" + tier.id,
+                    props -> new TieredBeltConnectorItem(props, tier)));
         }
+    }
+
+    public static DeferredItem<TieredBeltConnectorItem> beltConnector(CMMPlusTier tier) {
+        return BELT_CONNECTORS.get(tier);
     }
 
     public static Item fan(CMMPlusTier tier) {

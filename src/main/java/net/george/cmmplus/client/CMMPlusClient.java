@@ -2,6 +2,7 @@ package net.george.cmmplus.client;
 
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import com.simibubi.create.content.kinetics.belt.BeltRenderer;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.george.cmmplus.CMMPlus;
@@ -41,6 +42,15 @@ public class CMMPlusClient {
         for (CMMPlusTier tier : CMMPlusTier.values()) {
             event.registerBlockEntityRenderer(ModBlockEntities.fan(tier),
                     context -> new TieredFanRenderer(context, CMMPlusPartialModels.propeller(tier)));
+
+            // Create registers BeltRenderer for create:belt right next to its belt visual
+            // (AllBlockEntityTypes.BELT: ".renderer(() -> BeltRenderer::new)"), and the belt
+            // visualizer alone does not replace it: the visual draws the belt surface, the vanilla
+            // renderer draws the items riding the belt.  A tier belt has its own block entity type,
+            // so it needs its own entry or those items are simply not drawn.  BeltRenderer is
+            // written against BeltBlockEntity and NeoForge's registration takes a
+            // BlockEntityType<? extends T>, so Create's renderer can be reused as is.
+            event.registerBlockEntityRenderer(ModBlockEntities.belt(tier), BeltRenderer::new);
         }
     }
 
@@ -98,6 +108,9 @@ public class CMMPlusClient {
 
     private static void registerVisuals() {
         CMMPlusPartialModels.init();
+        // Touches the belt sprite shifts so catnip has them registered before the first texture
+        // stitch - a shift created after a stitch would have no atlas sprite until the next one.
+        CMMPlusSpriteShifts.init();
 
         for (CMMPlusTier tier : CMMPlusTier.values()) {
             SimpleBlockEntityVisualizer.builder(ModBlockEntities.fan(tier))
@@ -112,6 +125,20 @@ public class CMMPlusClient {
                     .skipVanillaRender(be -> true)
                     .apply();
 
+            // A belt's uncased block model is the empty particle model, so without a visual nothing
+            // is drawn.  This is Create's BeltVisual with the tier's own scrolling surface (see
+            // TieredBeltVisual / CMMPlusSpriteShifts); the tier comes from the block entity, so
+            // there is no model to resolve here.
+            SimpleBlockEntityVisualizer.builder(ModBlockEntities.belt(tier))
+                    .factory(TieredBeltVisual.factory())
+                    // BeltBlockEntity#shouldRenderNormally is true for the piece whose vanilla
+                    // renderer still has work to do - the controller, which draws the items riding
+                    // the belt - so that one must not be skipped.  Create registers its belt visual
+                    // with this exact predicate (AllBlockEntityTypes.BELT).
+                    .skipVanillaRender(be -> !be.shouldRenderNormally())
+                    .apply();
+
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.belt(tier).get(), RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.fan(tier).get(), RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.wheel(tier).get(), RenderType.cutoutMipped());
         }

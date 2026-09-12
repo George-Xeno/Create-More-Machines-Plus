@@ -12,5 +12,12 @@
   "block.cmmplus.crushing_wheel_brass": "Crushing Wheel",
   "block.cmmplus.crushing_wheel_netherite": "Crushing Wheel",
   "block.cmmplus.crushing_wheel_end": "Crushing Wheel",
-  "block.cmmplus.crushing_wheel_beyond": "Crushing Wheel"
+  "block.cmmplus.crushing_wheel_beyond": "Crushing Wheel",
+  "item.cmmplus.belt_connector_brass": "Brass Belt",
+  "item.cmmplus.belt_connector_netherite": "Netherite Belt",
+  "item.cmmplus.belt_connector_end": "End Belt",
+  "item.cmmplus.belt_connector_beyond": "Beyond Belt",
+  "tooltip.cmmplus.belt.stress": "§aStress:§f RPM × Belt Length × %s",
+  "tooltip.cmmplus.belt.capacity": "§aPer belt block:§f %s positions",
+  "tooltip.cmmplus.belt.mixed": "§aBeyond only:§f one block can hold different items at once, %s positions in total"
 }

@@ -6,6 +6,8 @@ import com.simibubi.create.foundation.item.TooltipModifier;
 import net.george.cmmplus.CMMPlusConfig;
 import net.george.cmmplus.CMMPlusTier;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
  * Create looks stress impacts up per block ({@code BlockStressValues.IMPACTS}); a block that is not
@@ -21,6 +23,18 @@ import net.minecraft.world.item.Item;
  * "x RPM" value.
  */
 public class ModSetup {
+    /**
+     * Create registers its belt's item capability against its own block entity type only, so
+     * tiered belts have to expose theirs here - otherwise funnels, hoppers and pipes see nothing
+     * at a tiered belt block at all.
+     */
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        for (CMMPlusTier tier : CMMPlusTier.values()) {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.belt(tier),
+                    (be, context) -> be.segmentItemHandler());
+        }
+    }
+
     public static void register() {
         for (CMMPlusTier tier : CMMPlusTier.values()) {
             BlockStressValues.IMPACTS.register(ModBlocks.fan(tier).get(), () -> CMMPlusConfig.fanImpact(tier));
@@ -28,6 +42,11 @@ public class ModSetup {
 
             addKineticStatsTooltip(ModItems.fan(tier));
             addKineticStatsTooltip(ModItems.wheel(tier));
+            // Belts draw a length-dependent stress, which Create's registry-driven item tooltip
+            // cannot express (the in-world goggles read calculateStressApplied() directly and are
+            // already correct), so the belt connector item explains the formula itself.
+            TooltipModifier.REGISTRY.register(ModItems.beltConnector(tier).get(),
+                    new net.george.cmmplus.client.TieredBeltTooltip(tier));
         }
     }
 

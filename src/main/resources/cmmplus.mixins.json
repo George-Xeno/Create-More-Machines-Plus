@@ -3,6 +3,24 @@
   "minVersion": "0.8",
   "package": "net.george.cmmplus.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": ["BlockEntityTypeMixin"],
+  "mixins": [
+    "BlockEntityTypeMixin",
+    "BlockEntryMixin",
+    "BeltBlockMixin",
+    "BeltBlockEntityMixin",
+    "BeltSlicerMixin",
+    "BeltMovementHandlerMixin",
+    "BeltTunnelBlockMixin",
+    "BeltTunnelBlockEntityMixin",
+    "BeltFunnelBlockMixin",
+    "BlockMovementChecksImplMixin",
+    "ContraptionMixin",
+    "DeployerMovementBehaviourMixin",
+    "SchematicannonBlockEntityMixin",
+    "BlockHelperMixin",
+    "AllArmInteractionPointTypesBeltTypeMixin",
+    "AssemblyOperatorBlockItemMixin"
+  ],
+  "client": ["BeltSlicerClientMixin", "BeltRendererMixin"],
   "injectors": { "defaultRequire": 1 }
 }
