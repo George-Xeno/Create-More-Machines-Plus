@@ -1,4 +1,4 @@
-# Create:More Machines Plus
+# Create : More Machines Plus
  
 机械动力附属 [更多机械](https://modrinth.com/mod/create-more-machines)（CreateMoreMachines）的扩展，加了四档**鼓风机**和**粉碎轮**：黄铜 x4、下界 x8、末地 x16、超越 x32
 
