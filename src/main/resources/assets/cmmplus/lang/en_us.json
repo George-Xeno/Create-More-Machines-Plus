@@ -1,0 +1,16 @@
+{
+  "tier.cmmplus.brass": "Brass ",
+  "tier.cmmplus.netherite": "Netherite ",
+  "tier.cmmplus.end": "End ",
+  "tier.cmmplus.beyond": "Beyond ",
+  "itemGroup.cmmplus": "CMM Plus",
+  "tooltip.cmmplus.speed": "§aProcessing Speed:§f %s",
+  "block.cmmplus.encased_fan_brass": "Encased Fan",
+  "block.cmmplus.encased_fan_netherite": "Encased Fan",
+  "block.cmmplus.encased_fan_end": "Encased Fan",
+  "block.cmmplus.encased_fan_beyond": "Encased Fan",
+  "block.cmmplus.crushing_wheel_brass": "Crushing Wheel",
+  "block.cmmplus.crushing_wheel_netherite": "Crushing Wheel",
+  "block.cmmplus.crushing_wheel_end": "Crushing Wheel",
+  "block.cmmplus.crushing_wheel_beyond": "Crushing Wheel"
+}

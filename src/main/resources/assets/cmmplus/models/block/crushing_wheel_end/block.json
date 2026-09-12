@@ -1,0 +1,6 @@
+{
+	"parent": "cmmplus:block/crushing_wheel_end/textures",
+	"loader": "neoforge:obj",
+	"flip_v": true,
+	"model": "cmmplus:models/block/crushing_wheel_end/crushing_wheel_end.obj"
+}

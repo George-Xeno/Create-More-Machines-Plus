@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "create:encased_fan" },
+    { "item": "create:brass_sheet" }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cmmplus:encased_fan_brass"
+  }
+}

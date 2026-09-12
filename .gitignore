@@ -1,0 +1,31 @@
+# Gradle / build output
+.gradle/
+build/
+out/
+
+# Development run directory (dev worlds, generated configs, logs)
+run/
+
+# Decompiled reference sources used while writing this mod (Create / Flywheel / Create More
+# Machines / Minecraft).  Never commit those: they are other people's code.
+research/
+
+# Third party mod jars - see libs/README.md, they are not redistributed here
+libs/*.jar
+libs/*.zip
+
+# Logs captured while testing
+*.log
+*_log.txt
+logs/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+bin/

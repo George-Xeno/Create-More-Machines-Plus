@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=x": { "model": "cmmplus:block/crushing_wheel_brass/block", "x": 90, "y": 90 },
+    "axis=y": { "model": "cmmplus:block/crushing_wheel_brass/block" },
+    "axis=z": { "model": "cmmplus:block/crushing_wheel_brass/block", "x": 90, "y": 180 }
+  }
+}

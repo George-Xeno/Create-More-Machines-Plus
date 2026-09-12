@@ -1,0 +1,16 @@
+{
+  "tier.cmmplus.brass": "黄铜",
+  "tier.cmmplus.netherite": "下界",
+  "tier.cmmplus.end": "末地",
+  "tier.cmmplus.beyond": "超越",
+  "itemGroup.cmmplus": "CMM Plus",
+  "tooltip.cmmplus.speed": "§a处理速度:§f %s",
+  "block.cmmplus.encased_fan_brass": "鼓风机",
+  "block.cmmplus.encased_fan_netherite": "鼓风机",
+  "block.cmmplus.encased_fan_end": "鼓风机",
+  "block.cmmplus.encased_fan_beyond": "鼓风机",
+  "block.cmmplus.crushing_wheel_brass": "粉碎轮",
+  "block.cmmplus.crushing_wheel_netherite": "粉碎轮",
+  "block.cmmplus.crushing_wheel_end": "粉碎轮",
+  "block.cmmplus.crushing_wheel_beyond": "粉碎轮"
+}

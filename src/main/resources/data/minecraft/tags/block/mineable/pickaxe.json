@@ -1,0 +1,13 @@
+{
+    "replace":  false,
+    "values":  [
+                   "cmmplus:crushing_wheel_brass",
+                   "cmmplus:encased_fan_brass",
+                   "cmmplus:crushing_wheel_netherite",
+                   "cmmplus:encased_fan_netherite",
+                   "cmmplus:crushing_wheel_end",
+                   "cmmplus:encased_fan_end",
+                   "cmmplus:crushing_wheel_beyond",
+                   "cmmplus:encased_fan_beyond"
+               ]
+}

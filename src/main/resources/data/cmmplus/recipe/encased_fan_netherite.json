@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "cmmplus:encased_fan_brass" },
+    { "item": "createmoremachines:netherite_alloy_sheet" }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cmmplus:encased_fan_netherite"
+  }
+}

@@ -1,0 +1,15 @@
+{
+	"parent": "cmmplus:block/crushing_wheel_beyond/block",
+	"display": {
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, 0, 0],
+			"scale": [0.45, 0.45, 0.45]
+		},
+		"fixed": {
+			"rotation": [90, 0, 0],
+			"translation": [0, 0, 0],
+			"scale": [0.45, 0.45, 0.45]
+		}
+	}
+}

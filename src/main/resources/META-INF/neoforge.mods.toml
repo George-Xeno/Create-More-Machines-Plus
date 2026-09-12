@@ -1,0 +1,42 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mixins]]
+    config = "cmmplus.mixins.json"
+
+[[mods]]
+    modId = "cmmplus"
+    version = "1.0.0"
+    displayName = "CMM Plus"
+    authors = "George"
+    description = '''Addon for CreateMoreMachines: four tiers of Encased Fan and Crushing Wheel
+(Brass x4, Netherite x8, End x16, Beyond x32 processing speed).'''
+
+[[dependencies.cmmplus]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[21,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.cmmplus]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "[1.21.1,1.22)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.cmmplus]]
+    modId = "create"
+    type = "required"
+    versionRange = "[6.0.9,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.cmmplus]]
+    modId = "createmoremachines"
+    type = "required"
+    versionRange = "[1.21.1-2.7,)"
+    ordering = "AFTER"
+    side = "BOTH"

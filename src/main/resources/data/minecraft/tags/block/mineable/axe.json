@@ -1,0 +1,9 @@
+{
+    "replace":  false,
+    "values":  [
+                   "cmmplus:encased_fan_brass",
+                   "cmmplus:encased_fan_netherite",
+                   "cmmplus:encased_fan_end",
+                   "cmmplus:encased_fan_beyond"
+               ]
+}

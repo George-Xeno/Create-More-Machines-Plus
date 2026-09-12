@@ -1,0 +1,6 @@
+{
+	"parent": "cmmplus:block/crushing_wheel_brass/textures",
+	"loader": "neoforge:obj",
+	"flip_v": true,
+	"model": "cmmplus:models/block/crushing_wheel_brass/crushing_wheel_brass.obj"
+}
