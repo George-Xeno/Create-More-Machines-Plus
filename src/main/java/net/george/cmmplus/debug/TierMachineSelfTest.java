@@ -325,6 +325,18 @@ public final class TierMachineSelfTest {
          * The tier belts' own assertions.  These are the ones that would silently regress if the
          * Registrate mixin, the block entity registration or the load accounting broke.
          */
+        /** A compile cannot check datapack recipes: assert they really made it into the recipe manager. */
+        private void checkBeltRecipes() {
+            for (CMMPlusTier tier : CMMPlusTier.values()) {
+                net.minecraft.resources.ResourceLocation id = net.minecraft.resources.ResourceLocation
+                        .fromNamespaceAndPath(net.george.cmmplus.CMMPlus.MOD_ID, "belt_connector_" + tier.id);
+                if (level.getRecipeManager().byKey(id).isEmpty()) {
+                    failures.add("recipe did not load: " + id);
+                } else {
+                    CMMPlus.LOGGER.info("[self-test] recipe loaded: {}", id);
+                }
+            }
+        }
         private void verifyBeltRigs() {
             for (int i = 0; i < 2; i++) {
                 CMMPlusTier tier = i == 0 ? CMMPlusTier.BRASS : CMMPlusTier.BEYOND;
@@ -422,6 +434,7 @@ public final class TierMachineSelfTest {
             if (!beltChecked && ticks > 40) {
                 beltChecked = true;
                 verifyBeltRigs();
+                checkBeltRecipes();
             }
 
             boolean allDone = beltChecked && fanRigs.stream().allMatch(rig -> rig.done)
